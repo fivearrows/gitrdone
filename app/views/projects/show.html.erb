@@ -1,0 +1,39 @@
+<p>
+  <b>Name:</b>
+  <%=h @project.name %>
+</p>
+
+<p>
+  <b>Owner:</b>
+  <%=h @project.owner_id ? @project.owner.full_name : "&lt;unassigned&gt;" %>
+</p>
+
+<p>
+  <b>Phase:</b>
+  <%=h @project.current_phase.name %>
+</p>
+
+<p>
+  <b>Start date:</b>
+  <%=h @project.start_date %>
+</p>
+
+<p>
+  <b>End date:</b>
+  <%=h @project.end_date %>
+</p>
+
+<p>
+  <b>Active:</b>
+  <%=h @project.active %>
+</p>
+
+<hr/>
+<a href="<%= estimator_url(@project.id) %>">CLICK HERE TO ESTIMATE</a>
+<hr/>
+<br/>
+<br/>
+
+
+<%= link_to 'Edit', edit_project_path(@project) %> |
+<%= link_to 'Back', projects_path %>

@@ -1,0 +1,10 @@
+<%= form_tag("/projects/estimator_update") %>
+<%= hidden_field_tag("id", @project.id) %>
+<h1 class="nobox"><%= @project.name %></h1>
+<div id="accordion">
+<%- @project.tasks.toplevel.each do |task| -%>
+<%= render :partial => 'taskhierarchy', :locals => {:task=>task, :edit=>true} %>
+<%- end -%>
+</div>
+<script>$( "#accordion" ).accordion();</script>
+<%= submit_tag("Save Changes") %>

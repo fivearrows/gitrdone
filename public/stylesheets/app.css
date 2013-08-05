@@ -1,0 +1,113 @@
+h1,h2,h3,h4 {
+   color: #cc9999 ;
+}
+
+h1 {
+   padding: 5px ;
+   border-style: solid ;
+   border-width: 1px ;
+   border-color: #aa6666 ;
+}
+
+h1.nobox,h2.nobox,h3.nobox,h4.nobox {
+   border-style: none ;
+}
+
+#mainmenu,h1.divheader {
+   font-weight: bold ;
+   color: white ;
+   padding: 3px ;
+   background-color: #cc9999 ;
+   padding: 5px ;
+   border-style: solid ;
+   border-width: 1px ;
+   border-color: #aa6666 ;
+}
+
+#mainmenu {
+   margin-top: 10px ;
+}
+
+h1.divheader {
+   margin-top: 0px ;
+   padding: 20p ;
+   font-size: 100% ;
+}
+
+#mainmenu:after {
+   content: " - ToDoIt v0.1" ;
+}
+
+#mainmenu a:visited {
+   font-weight: bold ;
+   color: #ffcccc ;
+}
+
+a {
+   padding: 2px ;
+}
+
+#myProjects {
+   width: 58% ;
+   float: left ;
+}
+
+#myTasks {
+   width: 38% ;
+   float: right ;
+}
+
+#myProjects,#myTasks {
+   height: 150px ;
+   border-width: 1px ;
+   border-style: solid ;
+   border-color: #aa6666 ;
+   margin: 0px ;
+}
+
+img.logo {
+   width: 64px ;
+   height: 64px ;
+   float: left ;
+}
+
+#siteLogo h1 {
+   border-style: none ;
+   height: 64px ;
+}
+
+#myProjects table,#myTasks table {
+   width: 100% ;
+   margin-top: 0px ;
+}
+
+#myProjects th,#myTasks th {
+   background-color: #cc9999 ;
+   color: white ;
+   text-align: left ;
+}
+
+div.task,div.subtask {
+   padding: 5px ;
+}
+
+div.task {
+   border-style: solid ;
+   border-width: 1px ;
+   border-color: black ;
+   background-color: #eeeeee ;
+   margin-bottom: 15px ;
+}
+
+div.subtask {
+   margin-left: 30px ;
+   background-color: #cccccc ;
+}
+
+div.task span.task {
+   font-weight: bold ;
+}
+
+div.task span.owner {
+   font-style: italic ;
+}

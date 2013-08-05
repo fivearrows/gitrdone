@@ -1,0 +1,28 @@
+<p>
+  <b>Name:</b>
+  <%=h @setting.name %>
+</p>
+
+<p>
+  <b>Setting type:</b>
+  <%=h @setting.setting_type_id %>
+</p>
+
+<p>
+  <b>String value:</b>
+  <%=h @setting.string_value %>
+</p>
+
+<p>
+  <b>Boolean value:</b>
+  <%=h @setting.boolean_value %>
+</p>
+
+<p>
+  <b>Integer value:</b>
+  <%=h @setting.integer_value %>
+</p>
+
+
+<%= link_to 'Edit', edit_setting_path(@setting) %> |
+<%= link_to 'Back', settings_path %>

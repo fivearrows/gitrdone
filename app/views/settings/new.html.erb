@@ -1,0 +1,31 @@
+<h1>New setting</h1>
+
+<% form_for(@setting) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </p>
+  <p>
+    <%= f.label :setting_type_id %><br />
+    <%= f.text_field :setting_type_id %>
+  </p>
+  <p>
+    <%= f.label :string_value %><br />
+    <%= f.text_field :string_value %>
+  </p>
+  <p>
+    <%= f.label :boolean_value %><br />
+    <%= f.check_box :boolean_value %>
+  </p>
+  <p>
+    <%= f.label :integer_value %><br />
+    <%= f.text_field :integer_value %>
+  </p>
+  <p>
+    <%= f.submit 'Create' %>
+  </p>
+<% end %>
+
+<%= link_to 'Back', settings_path %>

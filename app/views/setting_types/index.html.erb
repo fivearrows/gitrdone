@@ -1,0 +1,20 @@
+<h1>Listing setting_types</h1>
+
+<table>
+  <tr>
+    <th>Name</th>
+  </tr>
+
+<% @setting_types.each do |setting_type| %>
+  <tr>
+    <td><%=h setting_type.name %></td>
+    <td><%= link_to 'Show', setting_type %></td>
+    <td><%= link_to 'Edit', edit_setting_type_path(setting_type) %></td>
+    <td><%= link_to 'Destroy', setting_type, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New setting_type', new_setting_type_path %>

@@ -1,0 +1,1 @@
+<h3><span class="task"><%= task.name %></span>&nbsp;<span class="owner"><%= task.owner.full_name %></span></h3>

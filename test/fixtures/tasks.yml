@@ -1,0 +1,21 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  name: MyString
+  project_id: 1
+  parent_task_id: 1
+  active: false
+  pct_complete: 
+  complete: false
+  charge_number_id: 1
+  owner_id: 1
+
+two:
+  name: MyString
+  project_id: 1
+  parent_task_id: 1
+  active: false
+  pct_complete: 
+  complete: false
+  charge_number_id: 1
+  owner_id: 1

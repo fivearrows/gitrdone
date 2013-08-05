@@ -1,0 +1,11 @@
+<%= form_tag("/projects/estimator_update") %>
+<%= hidden_field_tag("id", @project.id) %>
+<h1 class="nobox"><%= @project.name %></h1>
+<%- @project.tasks.toplevel.each do |task| -%>
+<div id="toplevel_<%= task.id %>" class="task" onclick="toggle_subs('<%= task.id %>')">
+<span id="toggle_<%= task.id %>">-</span>
+<%= render :partial => 'taskhierarchy', :locals => {:task=>task, :edit=>@edit} %>
+</div>
+</div>
+<%- end -%>
+<%= submit_tag("Save Changes") %>

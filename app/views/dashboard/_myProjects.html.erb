@@ -1,0 +1,14 @@
+<div id="myProjects"><h1 class="divheader">My Projects</h1>
+<table>
+   <tr><th>Project</th><th>Phase</th><th>Owner</th><th>Start</th><th>Finish</th><th>% cmp</th></tr>
+   <% @projects.each do |project| -%>
+   <tr><td><%= link_to project.name, project %></td>
+   <td><%= project.current_phase.name %></td>
+   <td><%= project.owner ? project.owner.full_name : "&lt;unassigned&gt;" %></td>
+   <td><%= project.start_date %></td>
+   <td><%= project.end_date %></td>
+   <td><%= project.pct_complete %>%</td>
+   </tr>
+   <% end -%>
+</table>
+</div>

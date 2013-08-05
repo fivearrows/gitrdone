@@ -1,0 +1,8 @@
+<%= render :partial => 'taskrow', :locals => {:task => task, :edit=>edit} %>
+<div class="allkids" id="kids_<%= task.id %>">
+<%- task.subtasks.each do |subtask| -%>
+  <div class="subtask">
+  <%= render :partial => 'taskhierarchy', :locals => {:task=>subtask, :edit=>edit} %>
+  </div>
+</div>
+<%- end -%>

@@ -1,0 +1,38 @@
+<p>
+  <b>Name:</b>
+  <%=h @task.name %>
+</p>
+
+<p>
+  <b>Project:</b>
+  <%=h @task.project_id %>
+</p>
+
+<p>
+  <b>Parent task:</b>
+  <%=h @task.parent_task_id %>
+</p>
+
+<p>
+  <b>Active:</b>
+  <%=h @task.active %>
+</p>
+
+<p>
+  <b>Complete:</b>
+  <%=h @task.complete %>
+</p>
+
+<p>
+  <b>Charge number:</b>
+  <%=h @task.charge_number_id %>
+</p>
+
+<p>
+  <b>Owner:</b>
+  <%=h @task.owner_id %>
+</p>
+
+
+<%= link_to 'Edit', edit_task_path(@task) %> |
+<%= link_to 'Back', tasks_path %>

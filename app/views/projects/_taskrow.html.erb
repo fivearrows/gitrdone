@@ -1,0 +1,12 @@
+<%- if edit
+   taskname_field=text_field_tag("task_name_"+(task.id.to_s), task.name)
+   taskowner_field=collection_select(nil, "task_owner_"+(task.id.to_s), 
+      Person.byname,
+      :id,
+      :full_name,
+      {:selected => task.owner.id, :include_blank => '--- not assigned ---'})
+else
+   taskname_field=task.name
+   taskowner_field=task.owner.full_name
+end -%>
+<span class="task"><%= taskname_field %></span>&nbsp;<span class="owner"><%= taskowner_field %></span>

@@ -1,0 +1,20 @@
+<h1>Editing work_unit</h1>
+
+<% form_for(@work_unit) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </p>
+  <p>
+    <%= f.label :hour_equivalent %><br />
+    <%= f.text_field :hour_equivalent %>
+  </p>
+  <p>
+    <%= f.submit 'Update' %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @work_unit %> |
+<%= link_to 'Back', work_units_path %>

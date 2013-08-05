@@ -1,0 +1,18 @@
+<p>
+  <b>Name:</b>
+  <%=h @project_phase.name %>
+</p>
+
+<p>
+  <b>Short name:</b>
+  <%=h @project_phase.short_name %>
+</p>
+
+<p>
+  <b>Sequence:</b>
+  <%=h @project_phase.sequence %>
+</p>
+
+
+<%= link_to 'Edit', edit_project_phase_path(@project_phase) %> |
+<%= link_to 'Back', project_phases_path %>

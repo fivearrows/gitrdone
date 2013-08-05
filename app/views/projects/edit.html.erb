@@ -1,0 +1,36 @@
+<h1>Editing project</h1>
+
+<% form_for(@project) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </p>
+  <p>
+    <%= f.label :owner_id %><br />
+    <%= f.collection_select :owner_id, Person.byname, :id, :full_name, {:include_blank=>"--- not assigned ---"} %>
+  </p>
+  <p>
+    <%= f.label :current_phase %><br />
+    <%= f.collection_select :current_phase_id, ProjectPhase.inorder, :id, :name %>
+  </p>
+  <p>
+    <%= f.label :start_date %><br />
+    <%= f.date_select :start_date %>
+  </p>
+  <p>
+    <%= f.label :end_date %><br />
+    <%= f.date_select :end_date %>
+  </p>
+  <p>
+    <%= f.label :active %><br />
+    <%= f.check_box :active %>
+  </p>
+  <p>
+    <%= f.submit 'Update' %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @project %> |
+<%= link_to 'Back', projects_path %>

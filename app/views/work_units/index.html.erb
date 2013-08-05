@@ -1,0 +1,22 @@
+<h1>Listing work_units</h1>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Hour equivalent</th>
+  </tr>
+
+<% @work_units.each do |work_unit| %>
+  <tr>
+    <td><%=h work_unit.name %></td>
+    <td><%=h work_unit.hour_equivalent %></td>
+    <td><%= link_to 'Show', work_unit %></td>
+    <td><%= link_to 'Edit', edit_work_unit_path(work_unit) %></td>
+    <td><%= link_to 'Destroy', work_unit, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New work_unit', new_work_unit_path %>
