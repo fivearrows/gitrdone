@@ -2,13 +2,13 @@ class CreateWorkUnits < ActiveRecord::Migration
   def self.up
     create_table :work_units do |t|
       t.string :name
-      t.number :hour_equivalent
+      t.float :hour_equivalent
 
       t.timestamps
     end
 
     add_column :tasks, :work_unit_id, :integer
-    add_column :tasks, :actual, :number
+    add_column :tasks, :actual, :float
 
     u=WorkUnit.new
     u.id=1
@@ -27,7 +27,7 @@ class CreateWorkUnits < ActiveRecord::Migration
     u.save
 
     u=WorkUnit.new
-    u.name="RM"
+    u.name="Month"
     u.hour_equivalent=160.0
     u.save
 

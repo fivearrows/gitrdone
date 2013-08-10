@@ -1,0 +1,13 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  task_id: 1
+  phase_id: 1
+  estimate_unit_id: 1
+  qty: 1.5
+
+two:
+  task_id: 1
+  phase_id: 1
+  estimate_unit_id: 1
+  qty: 1.5

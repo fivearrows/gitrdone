@@ -1,4 +1,10 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resources :estimates
+
+  map.resources :estimate_units
+
+  map.resources :task_types
+
   map.resources :work_units
 
   map.resources :project_phases

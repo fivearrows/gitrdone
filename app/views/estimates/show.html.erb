@@ -1,0 +1,23 @@
+<p>
+  <b>Task:</b>
+  <%=h @estimate.task_id %>
+</p>
+
+<p>
+  <b>Phase:</b>
+  <%=h @estimate.phase_id %>
+</p>
+
+<p>
+  <b>Estimate unit:</b>
+  <%=h @estimate.estimate_unit_id %>
+</p>
+
+<p>
+  <b>Qty:</b>
+  <%=h @estimate.qty %>
+</p>
+
+
+<%= link_to 'Edit', edit_estimate_path(@estimate) %> |
+<%= link_to 'Back', estimates_path %>

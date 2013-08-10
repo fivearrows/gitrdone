@@ -9,7 +9,22 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130804151827) do
+ActiveRecord::Schema.define(:version => 20130810015031) do
+
+  create_table "estimate_units", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "estimates", :force => true do |t|
+    t.integer  "task_id"
+    t.integer  "estimate_unit_id"
+    t.float    "qty"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "project_phase_id"
+  end
 
   create_table "people", :force => true do |t|
     t.string   "first_name"
@@ -36,6 +51,7 @@ ActiveRecord::Schema.define(:version => 20130804151827) do
     t.datetime "updated_at"
     t.integer  "current_phase_id"
     t.integer  "pct_complete"
+    t.integer  "default_task_type_id"
   end
 
   create_table "roles", :force => true do |t|
@@ -63,6 +79,13 @@ ActiveRecord::Schema.define(:version => 20130804151827) do
     t.datetime "updated_at"
   end
 
+  create_table "task_types", :force => true do |t|
+    t.string   "name"
+    t.float    "complexity_factor"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "tasks", :force => true do |t|
     t.string   "name"
     t.integer  "project_id"
@@ -75,6 +98,19 @@ ActiveRecord::Schema.define(:version => 20130804151827) do
     t.datetime "updated_at"
     t.integer  "sequence"
     t.integer  "pct_complete"
+    t.integer  "work_unit_id"
+    t.float    "actual"
+    t.integer  "task_type_id"
+    t.date     "target_date"
+    t.date     "due_date"
+    t.date     "deadline"
+  end
+
+  create_table "work_units", :force => true do |t|
+    t.string   "name"
+    t.float    "hour_equivalent"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
 end

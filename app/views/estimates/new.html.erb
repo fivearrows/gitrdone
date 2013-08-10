@@ -1,0 +1,27 @@
+<h1>New estimate</h1>
+
+<% form_for(@estimate) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :task_id %><br />
+    <%= f.text_field :task_id %>
+  </p>
+  <p>
+    <%= f.label :phase_id %><br />
+    <%= f.text_field :phase_id %>
+  </p>
+  <p>
+    <%= f.label :estimate_unit_id %><br />
+    <%= f.text_field :estimate_unit_id %>
+  </p>
+  <p>
+    <%= f.label :qty %><br />
+    <%= f.text_field :qty %>
+  </p>
+  <p>
+    <%= f.submit 'Create' %>
+  </p>
+<% end %>
+
+<%= link_to 'Back', estimates_path %>
