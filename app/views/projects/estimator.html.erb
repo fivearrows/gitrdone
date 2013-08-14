@@ -1,8 +1,23 @@
+<script>
+function convert_units(id,units,display) {
+   var unitid = parseInt($(units).value);
+   var value=parseFloat($(id).value);
+   var converted='';
+   switch(unitid) {
+<%- EstimateUnit.all.each do |u| -%>
+      case <%= u.id %>:
+         converted=(value * <%= u.to_hours %>) + " hours"
+         break;
+<%- end -%>
+   }
+   $(display).innerHTML=converted;
+}
+</script>
 <%= form_tag("/projects/estimator_update") %>
 <%= hidden_field_tag("id", @project.id) %>
 <h1 class="nobox"><%= @project.name %></h1>
 <%- @project.tasks.toplevel.each do |task| -%>
-<div id="toplevel_<%= task.id %>" class="task" onclick="toggle_subs('<%= task.id %>')">
+<div id="toplevel_<%= task.id %>" class="task">
 <span id="toggle_<%= task.id %>">-</span>
 <%= render :partial => 'taskhierarchy', :locals => {:task=>task, :edit=>@edit} %>
 </div>

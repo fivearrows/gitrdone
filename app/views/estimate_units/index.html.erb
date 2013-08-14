@@ -3,11 +3,13 @@
 <table>
   <tr>
     <th>Name</th>
+    <th>(in hours)</th>
   </tr>
 
 <% @estimate_units.each do |estimate_unit| %>
   <tr>
     <td><%=h estimate_unit.name %></td>
+    <td><%=h estimate_unit.to_hours %></td>
     <td><%= link_to 'Show', estimate_unit %></td>
     <td><%= link_to 'Edit', edit_estimate_unit_path(estimate_unit) %></td>
     <td><%= link_to 'Destroy', estimate_unit, :confirm => 'Are you sure?', :method => :delete %></td>

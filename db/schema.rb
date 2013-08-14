@@ -9,12 +9,13 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130810015031) do
+ActiveRecord::Schema.define(:version => 20130813010716) do
 
   create_table "estimate_units", :force => true do |t|
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.float    "to_hours"
   end
 
   create_table "estimates", :force => true do |t|
