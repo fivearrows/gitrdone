@@ -1,12 +1,6 @@
-<%- if edit
+<%- if edit && task.subtasks.count == 0
    n=task.id.to_s
    fn="convert_units('task_estimate_qty_#{n}','_task_estimate_unit_id_#{n}','cvt_#{n}')"
-   taskname_field=text_field_tag("task_name_"+(task.id.to_s), task.name)
-   taskowner_field=collection_select(nil, "task_owner_"+(task.id.to_s), 
-      Person.byname,
-      :id,
-      :full_name,
-      {:selected => task.owner.id, :include_blank => '--- not assigned ---'})
    estimate_unit_field=collection_select(nil, "task_estimate_unit_id_"+(task.id.to_s),
       EstimateUnit.all,
       :id,
@@ -16,11 +10,28 @@
    estimate_qty_field=text_field_tag("task_estimate_qty_"+(task.id.to_s), task.estimate_qty,
    	{:onchange => j(fn)})
 else
+   if task.subtasks.count > 0
+      estimate_unit_field=''
+      estimate_qty_field=''
+   else
+      estimate_unit_field=task.estimate_unit.name
+      estimate_qty_field=task.estimate_qty.to_s
+   end
+end
+
+if edit
+   taskname_field=text_field_tag("task_name_"+(task.id.to_s), task.name)
+   taskowner_field=collection_select(nil, "task_owner_"+(task.id.to_s), 
+      Person.byname,
+      :id,
+      :full_name,
+      {:selected => task.owner.id, :include_blank => '--- not assigned ---'})
+else
    taskname_field=task.name
    taskowner_field=task.owner.full_name
-   estimate_unit_field=task.estimate_unit.name
-   estimate_qty_field=task.estimate_qty.to_s
 end
 -%>
 <span class="task"><%= taskname_field %></span>&nbsp;<span class="owner"><%= taskowner_field %></span>
-  <span class="estimate_qty"><%= estimate_qty_field %></span>&nbsp;<span class="estimate_unit"><%= estimate_unit_field %></span><span id="cvt_<%= task.id.to_s %>"><%= task.estimate_txt %></span>
+  <span id="estimate_qty_<%= task.id.to_s %>" class="estimate_qty"><%= estimate_qty_field %></span>&nbsp;
+  <span class="estimate_unit"><%= estimate_unit_field %></span>&nbsp;
+  <span id="cvt_<%= task.id.to_s %>"><%= task.estimate_txt %></span>

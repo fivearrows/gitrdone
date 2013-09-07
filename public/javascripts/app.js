@@ -8,3 +8,38 @@ function toggle_subs(id) {
       ind.innerHTML="+";
    }
 }
+
+function roll_up(id,idkey) {
+    t=(0);
+    v=$(id);
+    p=v.parentElement;
+//    kids=$$('#' + p.id + ' div.subtask input');
+    kids=$$('#' + p.id + ' div.subtask span');
+    for(i=0; i < kids.size(); i++) {
+       kid=kids[i];
+       if(kid.id.indexOf(idkey) >= 0) {
+          alert(kid.innerHTML);
+          t=t+parseFloat(kid.innerHTML);
+       }
+    }
+    v.innerHTML=t;
+}
+
+function roll_up_old(id,idkey) {
+    t=0;
+    v=$(id);
+    p=v.parentElement;
+    kids=p.childElements();
+    alert(kids);
+    for (kid in kids) {
+       if(kid.id) {
+          if(kid.id.indexOf(idkey) >= 0) {
+             t=t+kid.value.to_float();
+	  }
+       }
+    }
+    v.innerHTML=t;
+}
+
+function sum_kids(id) {
+}

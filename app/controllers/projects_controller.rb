@@ -91,5 +91,10 @@ class ProjectsController < ApplicationController
 
   def estimator_update
      @params=params
+     @output=Array.new()
+     params.keys.grep('task_name_').each do |k|
+     	id=k.substr(9)
+	@output.push(id)
+     end
   end
 end
