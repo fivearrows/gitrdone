@@ -1,3 +1,17 @@
+function Estimate(id,name,hours,parent) {
+   this.id=id;
+   this.name=name;
+   this.parent=parent;
+   this.qty=hours;
+   this.units='hours';
+}
+
+Estimate.prototype= {
+   dump: function() {
+      return this.id + ': ' + this.name + ', ' + this.qty + ' ' + this.units;
+   }
+}
+
 function toggle_subs(id) {
    var st=$('kids_'+id);
    var ind=$('toggle_'+id);

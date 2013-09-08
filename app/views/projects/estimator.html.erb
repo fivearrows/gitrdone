@@ -12,15 +12,31 @@ function convert_units(id,units,display) {
    }
    $(display).innerHTML=converted;
 }
+rows=$A();
+window.onload = function() {
+   tb=$('jsesttable');
+   rows.each(function(row) {
+      tr=document.createElement('tr');
+      td=document.createElement('td');
+      td.innerText=row.dump();
+      tr.appendChild(td);
+      tb.appendChild(tr);
+   });
+}
 </script>
 <%= form_tag("/projects/estimator_update") %>
 <%= hidden_field_tag("id", @project.id) %>
 <h1 class="nobox"><%= @project.name %></h1>
 <%- @project.tasks.toplevel.each do |task| -%>
 <div id="toplevel_<%= task.id %>" class="task">
+<script>rows.push(new Estimate(<%= task.id %>,'<%= task.name %>', <%= task.current_estimate.qty %>,'hours'));</script>
 <span id="toggle_<%= task.id %>">-</span>
 <%= render :partial => 'taskhierarchy', :locals => {:task=>task, :edit=>@edit} %>
 </div>
 </div>
 <%- end -%>
 <%= submit_tag("Save Changes") %>
+<div id="jsest">
+<table id="jsesttable">
+</table>
+</div>
