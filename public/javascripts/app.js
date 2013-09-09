@@ -1,20 +1,51 @@
-function Estimate(id,name,hours,parent) {
-   this.id=id;
+//
+// Units - estimation units
+//
+function Unit(dbid,name,factor) {
+   this.dbid=dbid;
+   this.name=name;
+   this.factor=factor;
+}
+
+Unit.prototype = {
+   to_hours: function(qty) {
+      return this.factor * qty;
+   },
+
+   name: function() { return this.name; }
+}
+
+//
+// Estimate - task and the associated estimate
+//
+function Estimate(dbid,name,qty,units,parent) {
+   this.dbid=dbid;
    this.name=name;
    this.parent=parent;
-   this.qty=hours;
-   this.units='hours';
+   this.qty=qty;
+   this.units=units;
 }
 
 Estimate.prototype= {
    dump: function() {
-      return this.id + ': ' + this.name + ', ' + this.qty + ' ' + this.units;
+      return this.dbid + ': ' + this.name + ', ' + this.qty + ' ' + this.units.name +
+         ' (' + this.units.to_hours(this.qty) + ' hours)';
+   },
+
+   addrow: function(tbl) {
+      tb=$(tbl);
+      tr=document.createElement('tr');
+      td=document.createElement('td');
+      td.innerText=this.dump();
+      tr.appendChild(td);
+      tb.appendChild(tr);
+      tr.id='EstimateRow' + this.dbid;
    }
 }
 
-function toggle_subs(id) {
-   var st=$('kids_'+id);
-   var ind=$('toggle_'+id);
+function toggle_subs(dbid) {
+   var st=$('kids_'+dbid);
+   var ind=$('toggle_'+dbid);
    st.toggle();
    if(st.visible()) {
       ind.innerHTML="-";
@@ -23,15 +54,15 @@ function toggle_subs(id) {
    }
 }
 
-function roll_up(id,idkey) {
+function roll_up(dbid,idkey) {
     t=(0);
-    v=$(id);
+    v=$(dbid);
     p=v.parentElement;
 //    kids=$$('#' + p.id + ' div.subtask input');
-    kids=$$('#' + p.id + ' div.subtask span');
+    kids=$$('#' + p.dbid + ' div.subtask span');
     for(i=0; i < kids.size(); i++) {
        kid=kids[i];
-       if(kid.id.indexOf(idkey) >= 0) {
+       if(kid.dbid.indexOf(idkey) >= 0) {
           alert(kid.innerHTML);
           t=t+parseFloat(kid.innerHTML);
        }
@@ -39,15 +70,15 @@ function roll_up(id,idkey) {
     v.innerHTML=t;
 }
 
-function roll_up_old(id,idkey) {
+function roll_up_old(dbid,idkey) {
     t=0;
-    v=$(id);
+    v=$(dbid);
     p=v.parentElement;
     kids=p.childElements();
     alert(kids);
     for (kid in kids) {
-       if(kid.id) {
-          if(kid.id.indexOf(idkey) >= 0) {
+       if(kid.dbid) {
+          if(kid.dbid.indexOf(idkey) >= 0) {
              t=t+kid.value.to_float();
 	  }
        }
@@ -55,5 +86,5 @@ function roll_up_old(id,idkey) {
     v.innerHTML=t;
 }
 
-function sum_kids(id) {
+function sum_kids(dbid) {
 }

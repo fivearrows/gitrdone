@@ -1,41 +1,30 @@
 <script>
-function convert_units(id,units,display) {
-   var unitid = parseInt($(units).value);
-   var value=parseFloat($(id).value);
-   var converted='';
-   switch(unitid) {
-<%- EstimateUnit.all.each do |u| -%>
-      case <%= u.id %>:
-         converted=(value * <%= u.to_hours %>) + " hours"
-         break;
+units=$H();
+<%-  hoursid=0
+   EstimateUnit.all.each do |u|
+       if(u.name == "Hours")
+          hoursid=u.id
+       end
+-%>
+units.set(<%= u.id %>, new Unit(<%= u.id %>, '<%= u.name %>', <%= u.to_hours %>));
 <%- end -%>
-   }
-   $(display).innerHTML=converted;
-}
+<%- if(hoursid == 0) -%>
+units.set(0, new Unit(0, 'hours', 1.0));
+<%- end -%>
+
 rows=$A();
+<%- @project.tasks.each do |task|
+    qty = task.current_estimate ? (task.current_estimate.qty ? task.current_estimate.qty : 0) : 0
+    unit = task.current_estimate ? (task.current_estimate.estimate_unit_id ? task.current_estimate.estimate_unit_id : hoursid ) : hoursid
+-%>
+rows.push(new Estimate(<%= task.id %>,'<%= task.name %>', <%= qty %>,units.get(<%= unit %>)));
+<%- end -%>
+
 window.onload = function() {
    tb=$('jsesttable');
-   rows.each(function(row) {
-      tr=document.createElement('tr');
-      td=document.createElement('td');
-      td.innerText=row.dump();
-      tr.appendChild(td);
-      tb.appendChild(tr);
-   });
+   rows.each(function(row) { row.addrow(tb); });
 }
 </script>
-<%= form_tag("/projects/estimator_update") %>
-<%= hidden_field_tag("id", @project.id) %>
-<h1 class="nobox"><%= @project.name %></h1>
-<%- @project.tasks.toplevel.each do |task| -%>
-<div id="toplevel_<%= task.id %>" class="task">
-<script>rows.push(new Estimate(<%= task.id %>,'<%= task.name %>', <%= task.current_estimate.qty %>,'hours'));</script>
-<span id="toggle_<%= task.id %>">-</span>
-<%= render :partial => 'taskhierarchy', :locals => {:task=>task, :edit=>@edit} %>
-</div>
-</div>
-<%- end -%>
-<%= submit_tag("Save Changes") %>
 <div id="jsest">
 <table id="jsesttable">
 </table>
