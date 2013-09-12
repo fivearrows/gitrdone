@@ -1,4 +1,4 @@
-*.sw?
+.*.sw?
 public/javascripts/ext-4.2.1*
 *.rbc
 *.sassc
