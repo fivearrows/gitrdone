@@ -11,6 +11,7 @@ function createUnit(dbid,name,factor) {
 //---------------------------------------------------------------
 function rowChanged(est) {
    est.row.addClassName("changed");
+   est.dirty=1;
    if(est.units.dbid != est.unitSelect.options[est.unitSelect.selectedIndex].value) {
       est.unitid=est.unitSelect.options[est.unitSelect.selectedIndex].value;
       est.units=units.get(est.unitid);
@@ -19,6 +20,30 @@ function rowChanged(est) {
       est.qty=$F(est.qtyfield);
    }
    est.updateHours();
+}
+
+function saveChanges(status) {
+   // save
+   clearChanges(status, "Saved");
+}
+
+function revertChanges(status) {
+   // revert
+   clearChanges(status, "Reverted");
+}
+
+function clearChanges(status, message) {
+   s=$(status);
+   rows.keys().each(function(k) {
+      est=rows.get(k);
+      if(est && est.dirty) {
+         est.row.removeClassName("changed");
+      }
+   });
+   s.innerText=message;
+   s.addClassName("notice");
+   s.show();
+   s.fade.bind(s).delay(3);
 }
 
 //---------------------------------------------------------------
@@ -49,10 +74,10 @@ function createEstimate(dbid,name,qty,unitid,parent,sequence,kids) {
 }
 
 function displayEstimateHierarchy(tb,spacer) {
-   rows.toArray().map(function(a) { return a[1] }).filter(filter_toplevel).
+   rows.toArray().map( function(a) { return a[1] }).filter(filter_toplevel).
    	sort(sort_by_sequence).
 	each(function(row) {
-	   row.addrow(tb,spacer);
+	   row && row.addrow(tb,spacer);
 	});
 }
 
@@ -80,6 +105,20 @@ function Estimate(dbid,name,qty,unitid,parent,sequence,kids) {
 }
 
 Estimate.prototype= {
+   editFormat: new Template(
+      "<img>" +
+      "#{name}, " +
+      "<input size='8' value='#{qty}'> " +
+      "<select></select>" +
+      " (<span></span> Hours)"
+   ),
+
+   displayFormat: new Template(
+      "<img>" +
+      "#{name}, " +
+      "<span></span> Hours"
+   ),
+
    dump: function() {
       return this.dbid + ': ' + this.name + ', ' + this.qty + ' ' + this.units.name +
          ' (' + this.units.to_hours(this.qty) + ' hours)';
@@ -91,56 +130,43 @@ Estimate.prototype= {
    },
 
    addrow: function(tbl,spacer,prefix,level) {
-      var p = prefix ? (prefix+'.') : ''
       var l = level || 0;
       var tb=$(tbl);
       var tr=document.createElement('tr');
       var td=document.createElement('td');
-      var im=document.createElement('img');
+      var im;
       var n;
 
+      if(this.kids.size() == 0) {
+         n=this.editFormat.evaluate(this);
+	 td.update(n);
+
+	 // qty input
+	 this.qtyfield=td.down("input");
+         this.qtyfield.onchange=rowChanged.bind(this.qtyfield,this);
+
+	 // qty units
+	 this.unitSelect=td.down("select");
+         units.keys().each(function(u) {
+            uu=units.get(u);
+            this.unitSelect.add(new Option(uu.name, uu.dbid));
+         }.bind(this));
+         this.unitSelect.selectedIndex=this.unitid;
+         this.unitSelect.onchange=rowChanged.bind(n,this);
+
+	 // calculated hours
+         this.hoursOut=td.down("span");
+      } else {
+         n=this.displayFormat.evaluate(this);
+	 Element.update(td,n);
+	 this.hoursOut=td.down("span");
+      }
+
+      // format image
+      im=td.down("img");
       im.src=spacer.src;
       im.height=spacer.height;
       im.width=(l * 35)+5;
-      td.appendChild(im);
-
-      n=document.createElement("span");
-      n.innerText=this.name+", ";
-      td.appendChild(n);
-
-      if(this.kids.size() == 0) {
-         n=document.createElement("input");
-         n.size=8;
-         n.value=this.qty;
-         n.onchange=rowChanged.bind(n,this);
-         this.qtyfield=n;
-         td.appendChild(n);
-         n=document.createElement("select");
-         units.keys().each(function(u) {
-            uu=units.get(u);
-            n.add(new Option(uu.name, uu.dbid));
-         });
-         n.selectedIndex=this.unitid;
-         n.onchange=rowChanged.bind(n,this);
-         this.unitSelect=n;
-         td.appendChild(n);
-         n=document.createElement("span");
-         n.innerText=" (";
-         td.appendChild(n);
-         n=document.createElement("span");
-         this.hoursOut=n;
-         td.appendChild(n);
-         n=document.createElement("span");
-         n.innerText=" hours)";
-         td.appendChild(n);
-      } else {
-         n=document.createElement("span")
-	 this.hoursOut=n;
-	 td.appendChild(n);
-	 n=document.createElement("span");
-	 n.innerText=" Hours";
-	 td.appendChild(n);
-      }
       this.updateHours();
 
       this.row=tr;
@@ -150,7 +176,7 @@ Estimate.prototype= {
       this.kids.each(function(kid) { 
          k=rows.get(kid);
 	 if(k) {
-            k.addrow(tbl,spacer,p,l+1);
+            k.addrow(tbl,spacer,"",l+1);
 	 }
       });
    },
@@ -173,7 +199,7 @@ Estimate.prototype= {
    },
    
    updateHours: function() {
-      this.hoursOut.innerText=this.calculateHours();
+      this.hoursOut.update(this.calculateHours());
 
       if(this.parent != 0) {
          p=rows.get(this.parent);
@@ -191,6 +217,7 @@ Estimate.prototype= {
       createEstimate(dbid,name,qty,unitid,this.dbid,sequence,[]);
       this.kids.push(dbid);
    }
+
 }
 
 //---------------------------------------------------------------

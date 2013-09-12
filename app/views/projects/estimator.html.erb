@@ -25,9 +25,18 @@ window.onload = function() {
    tb=$('jsesttable');
    spacer=$$('#spacer img')[0];
    displayEstimateHierarchy(tb,spacer);
-}
+};
+
+document.observe("dom:loaded", function() {
+   $('status').hide();
+});
+
 </script>
 <div id="jsest">
+<span class="button" onclick="saveChanges('status')">Save</span>
+<span class="button" onclick="revertChanges('status')">Revert</span><br/>
+<div id="status"></div>
+<br />
 <table id="jsesttable">
 </table>
 </div>

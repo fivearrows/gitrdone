@@ -119,3 +119,29 @@ div.task span.task {
 div.task span.owner {
    font-style: italic ;
 }
+
+span.button {
+   padding-top: 2px ;
+   padding-bottom: 2px ;
+   padding-left: 10px ;
+   padding-right: 10px ;
+   border-style: solid;
+   border-width: 1px ;
+   border-color: #a66 ;
+   background-color: #c99 ;
+}
+
+span.button:hover {
+   background-color: #a66 ;
+   color: white ;
+}
+
+.notice {
+   margin-top: 15px ;
+   background-color: #9d9 ;
+   padding: 10px ;
+   border-style: solid ;
+   border-width: 2px ;
+   border-color: #393 ;
+   color: #393 ;
+}
