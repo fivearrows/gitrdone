@@ -28,6 +28,14 @@ h1.nobox,h2.nobox,h3.nobox,h4.nobox {
    margin-top: 10px ;
 }
 
+tr {
+   padding: 5px ;
+}
+
+tr.changed {
+   background-color: #eeeeee ;
+}
+
 h1.divheader {
    margin-top: 0px ;
    padding: 20p ;
