@@ -17,15 +17,19 @@ rows=$A();
     qty = task.current_estimate ? (task.current_estimate.qty ? task.current_estimate.qty : 0) : 0
     unit = task.current_estimate ? (task.current_estimate.estimate_unit_id ? task.current_estimate.estimate_unit_id : hoursid ) : hoursid
 -%>
-rows.push(new Estimate(<%= task.id %>,'<%= task.name %>', <%= qty %>,units.get(<%= unit %>)));
+rows.push(new Estimate(<%= task.id %>,'<%= task.name %>', <%= qty %>,units.get(<%= unit %>),<%= task.parent_task_id ? task.parent_task_id : 0 %>, <%= task.sequence ? task.sequence : 0 %>, [<%= task.subtasks.map{|s| s.id}.join(',') %>]));
 <%- end -%>
 
 window.onload = function() {
    tb=$('jsesttable');
-   rows.each(function(row) { row.addrow(tb); });
+   spacer=$$('#spacer img')[0];
+   rows.filter(filter_toplevel).sort(sort_by_sequence).each(function(row) { row.addrow(tb,spacer); });
 }
 </script>
 <div id="jsest">
 <table id="jsesttable">
 </table>
+</div>
+<div id="spacer" style="display: none">
+<%= image_tag("bl1px.png", :size=>"1x20") %>
 </div>
