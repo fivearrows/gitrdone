@@ -1,6 +1,14 @@
-//
+//---------------------------------------------------------------
+// global variables and functions for units
+//---------------------------------------------------------------
+units = $H();
+function createUnit(dbid,name,factor) {
+   units.set(dbid,new Unit(dbid,name,factor));
+}
+
+//---------------------------------------------------------------
 // Units - estimation units
-//
+//---------------------------------------------------------------
 function Unit(dbid,name,factor) {
    this.dbid=dbid;
    this.name=name;
@@ -15,15 +23,40 @@ Unit.prototype = {
    name: function() { return this.name; }
 }
 
-//
+//---------------------------------------------------------------
+//---------------------------------------------------------------
+rows = $A();
+
+function createEstimate(dbid,name,qty,unitid,parent,sequence,kids) {
+  rows.push(new Estimate(dbid,name,qty,unitid,parent,sequence,kids));
+}
+
+function displayEstimateHierarchy(tb,spacer) {
+   rows.filter(filter_toplevel).
+   	sort(sort_by_sequence).
+	each(function(row) {
+	   row.addrow(tb,spacer);
+	});
+}
+
+function redisplayEstimateHierarchy(tb,spacer) {
+   var i=0;
+   var x=tb.children.length;
+   for(i=0; i<x; i++) {
+      tb.deleteRow(0);
+   }
+   displayEstimateHierarchy(tb,spacer);
+}
+
+//---------------------------------------------------------------
 // Estimate - task and the associated estimate
-//
-function Estimate(dbid,name,qty,units,parent,sequence,kids) {
+//---------------------------------------------------------------
+function Estimate(dbid,name,qty,unitid,parent,sequence,kids) {
    this.dbid=dbid;
    this.name=name;
    this.parent=parent;
    this.qty=qty;
-   this.units=units;
+   this.units=units.get(unitid);
    this.kids=kids;
    this.sequence=sequence;
 }
@@ -62,9 +95,17 @@ Estimate.prototype= {
 
    toplevel: function() {
       return(this.parent == 0);
+   },
+
+   addChild: function(dbid,name,qty,unitid,sequence) {
+      createEstimate(dbid,name,qty,unitid,this.dbid,sequence,[]);
+      this.kids.push(dbid);
    }
 }
 
+//---------------------------------------------------------------
+// filtering / sorting functions
+//---------------------------------------------------------------
 function estimate_by_id(rows, a) {
    return rows.find(function(b) { return b.dbid == a; });
 }
@@ -75,50 +116,4 @@ function sort_by_sequence(a,b) {
 
 function filter_toplevel(a) {
    return a.toplevel();
-}
-
-function toggle_subs(dbid) {
-   var st=$('kids_'+dbid);
-   var ind=$('toggle_'+dbid);
-   st.toggle();
-   if(st.visible()) {
-      ind.innerHTML="-";
-   } else {
-      ind.innerHTML="+";
-   }
-}
-
-function roll_up(dbid,idkey) {
-    t=(0);
-    v=$(dbid);
-    p=v.parentElement;
-//    kids=$$('#' + p.id + ' div.subtask input');
-    kids=$$('#' + p.dbid + ' div.subtask span');
-    for(i=0; i < kids.size(); i++) {
-       kid=kids[i];
-       if(kid.dbid.indexOf(idkey) >= 0) {
-          alert(kid.innerHTML);
-          t=t+parseFloat(kid.innerHTML);
-       }
-    }
-    v.innerHTML=t;
-}
-
-function roll_up_old(dbid,idkey) {
-    t=0;
-    v=$(dbid);
-    p=v.parentElement;
-    kids=p.childElements();
-    alert(kids);
-    for (kid in kids) {
-       if(kid.dbid) {
-          if(kid.dbid.indexOf(idkey) >= 0) {
-             t=t+kid.value.to_float();
-	  }
-       }
-    }
-    v.innerHTML=t;
-}
-
-function sum_kids(dbid) {
 }

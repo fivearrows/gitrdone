@@ -1,29 +1,30 @@
 <script>
-units=$H();
-<%-  hoursid=0
-   EstimateUnit.all.each do |u|
-       if(u.name == "Hours")
-          hoursid=u.id
-       end
+<%-
+   EstimateUnit.all.each do |u| -%>
+createUnit(<%= u.id %>, '<%= u.name %>', <%= u.to_hours %>);
+<%-
+   end
+   hrs=EstimateUnit.find_by_name("Hours")
+   if hrs
+      hoursid=hrs.id
+   else -%>
+createUnit(0, 'Hours', 1.0);
+<%-
+      hoursid=0
+   end
 -%>
-units.set(<%= u.id %>, new Unit(<%= u.id %>, '<%= u.name %>', <%= u.to_hours %>));
-<%- end -%>
-<%- if(hoursid == 0) -%>
-units.set(0, new Unit(0, 'hours', 1.0));
-<%- end -%>
 
-rows=$A();
 <%- @project.tasks.each do |task|
     qty = task.current_estimate ? (task.current_estimate.qty ? task.current_estimate.qty : 0) : 0
     unit = task.current_estimate ? (task.current_estimate.estimate_unit_id ? task.current_estimate.estimate_unit_id : hoursid ) : hoursid
 -%>
-rows.push(new Estimate(<%= task.id %>,'<%= task.name %>', <%= qty %>,units.get(<%= unit %>),<%= task.parent_task_id ? task.parent_task_id : 0 %>, <%= task.sequence ? task.sequence : 0 %>, [<%= task.subtasks.map{|s| s.id}.join(',') %>]));
+createEstimate(<%= task.id %>,'<%= task.name %>',<%= qty %>,<%= unit %>,<%= task.parent_task_id ? task.parent_task_id : 0 %>,<%= task.sequence ? task.sequence : 0 %>,[<%= task.subtasks.map{|s| s.id}.join(',') %>]);
 <%- end -%>
 
 window.onload = function() {
    tb=$('jsesttable');
    spacer=$$('#spacer img')[0];
-   rows.filter(filter_toplevel).sort(sort_by_sequence).each(function(row) { row.addrow(tb,spacer); });
+   displayEstimateHierarchy(tb,spacer);
 }
 </script>
 <div id="jsest">
