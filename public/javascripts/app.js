@@ -23,23 +23,27 @@ function rowChanged(est) {
 }
 
 function saveChanges(status) {
-   // save
+   rows.keys().each(function(k) {
+      row=rows.get(k);
+      if(row) {
+         row.saveToServer();
+      }
+   });
    clearChanges(status, "Saved");
 }
 
 function revertChanges(status) {
-   // revert
+   rows.keys().each(function(k) {
+      row=rows.get(k);
+      if(row) {
+         row.revertValue();
+      }
+   });
    clearChanges(status, "Reverted");
 }
 
 function clearChanges(status, message) {
    s=$(status);
-   rows.keys().each(function(k) {
-      est=rows.get(k);
-      if(est && est.dirty) {
-         est.row.removeClassName("changed");
-      }
-   });
    s.innerText=message;
    s.addClassName("notice");
    s.show();
@@ -98,7 +102,9 @@ function Estimate(dbid,name,qty,unitid,parent,sequence,kids) {
    this.name=name;
    this.parent=parent;
    this.qty=qty;
+   this.original_qty=qty;
    this.unitid=unitid;
+   this.original_unitid=unitid;
    this.units=units.get(unitid);
    this.kids=kids;
    this.sequence=sequence;
@@ -110,7 +116,8 @@ Estimate.prototype= {
       "#{name}, " +
       "<input size='8' value='#{qty}'> " +
       "<select></select>" +
-      " (<span></span> Hours)"
+      " (<span></span> Hours)" +
+      " <span></span>"
    ),
 
    displayFormat: new Template(
@@ -151,11 +158,14 @@ Estimate.prototype= {
             uu=units.get(u);
             this.unitSelect.add(new Option(uu.name, uu.dbid));
          }.bind(this));
-         this.unitSelect.selectedIndex=this.unitid;
+         this.unitSelect.value=this.unitid;
          this.unitSelect.onchange=rowChanged.bind(n,this);
 
 	 // calculated hours
          this.hoursOut=td.down("span");
+
+	 // update indicator
+	 this.statusIndicator=td.down("span",1);
       } else {
          n=this.displayFormat.evaluate(this);
 	 Element.update(td,n);
@@ -207,6 +217,49 @@ Estimate.prototype= {
 	    p.updateHours();
 	 }
       }
+   },
+
+   setIndicator: function(response) {
+      this.statusIndicator.update("<i>saving...</i>");
+   },
+
+   setErrorIndicator: function(response) {
+      this.row.removeClassName("changed");
+      this.statusIndicator.update("<b>ERROR UPDATING</b>");
+   },
+
+   clearIndicator: function(response) {
+      this.dirty=0;
+      this.row.removeClassName("changed");
+      this.statusIndicator.update("");
+   },
+
+   saveToServer: function() {
+      if(!this.dirty) {
+         return;
+      }
+      this.setIndicator();
+      new Ajax.Request("/tasks/"+this.dbid,
+         {method: "put",
+	  parameters: {
+             "task[new_estimate_qty]": this.qty,
+	     "task[new_estimate_unit_id]": this.unitid
+          },
+          onSuccess: this.clearIndicator.bind(this),
+          onFailure: this.setErrorIndicator.bind(this)
+      });
+   },
+
+   revertValue: function() {
+      if(!this.dirty) {
+         return;
+      }
+      this.qty=this.original_qty;
+      this.qtyfield.value=this.qty;
+      this.unitid=this.original_unitid;
+      this.unitSelect.value=this.unitid;
+      this.dirty=0;
+      this.clearIndicator();
    },
 
    toplevel: function() {
