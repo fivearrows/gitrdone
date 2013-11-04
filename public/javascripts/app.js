@@ -16,6 +16,8 @@ function rowChanged(est) {
       est.unitid=est.unitSelect.options[est.unitSelect.selectedIndex].value;
       est.units=units.get(est.unitid);
    }
+   est.tasktypeid=est.typeSelect.options[est.typeSelect.selectedIndex].value;
+   est.tasktype=taskTypes.get(est.tasktypeid);
    if(est.qtyfield) {
       est.qty=$F(est.qtyfield);
    }
@@ -70,11 +72,36 @@ Unit.prototype = {
 }
 
 //---------------------------------------------------------------
+// globals for task types
+//---------------------------------------------------------------
+taskTypes = $H();
+
+function createTaskType(dbid,name,factor) {
+   taskTypes.set(dbid,new TaskType(dbid,name,factor));
+}
+
+//---------------------------------------------------------------
+// task type
+//---------------------------------------------------------------
+function TaskType(dbid,name,factor) {
+   this.dbid=dbid;
+   this.name=name;
+   this.factor=factor;
+}
+
+TaskType.prototype = {
+   factor_hours: function(hours) {
+      return this.factor * hours;
+   }
+}
+
+//---------------------------------------------------------------
+// globals for estimates
 //---------------------------------------------------------------
 rows = $H();
 
-function createEstimate(dbid,name,qty,unitid,parent,sequence,kids) {
-  rows.set(dbid,new Estimate(dbid,name,qty,unitid,parent,sequence,kids));
+function createEstimate(dbid,name,qty,unitid,parent,sequence,kids,tasktypeid) {
+  rows.set(dbid,new Estimate(dbid,name,qty,unitid,parent,sequence,kids,tasktypeid));
 }
 
 function displayEstimateHierarchy(tb,spacer) {
@@ -97,7 +124,7 @@ function redisplayEstimateHierarchy(tb,spacer) {
 //---------------------------------------------------------------
 // Estimate - task and the associated estimate
 //---------------------------------------------------------------
-function Estimate(dbid,name,qty,unitid,parent,sequence,kids) {
+function Estimate(dbid,name,qty,unitid,parent,sequence,kids,tasktypeid) {
    this.dbid=dbid;
    this.name=name;
    this.parent=parent;
@@ -107,12 +134,16 @@ function Estimate(dbid,name,qty,unitid,parent,sequence,kids) {
    this.original_unitid=unitid;
    this.units=units.get(unitid);
    this.kids=kids;
+   this.tasktypeid=tasktypeid;
+   this.original_tasktypeid=tasktypeid;
+   this.tasktype=taskTypes.get(tasktypeid);
    this.sequence=sequence;
 }
 
 Estimate.prototype= {
    editFormat: new Template(
       "<img>" +
+      "<select></select>" +
       "#{name}, " +
       "<input size='8' value='#{qty}'> " +
       "<select></select>" +
@@ -153,13 +184,22 @@ Estimate.prototype= {
          this.qtyfield.onchange=rowChanged.bind(this.qtyfield,this);
 
 	 // qty units
-	 this.unitSelect=td.down("select");
+	 this.unitSelect=td.down("select",1);
          units.keys().each(function(u) {
             uu=units.get(u);
             this.unitSelect.add(new Option(uu.name, uu.dbid));
          }.bind(this));
          this.unitSelect.value=this.unitid;
-         this.unitSelect.onchange=rowChanged.bind(n,this);
+         this.unitSelect.onchange=rowChanged.bind(this.unitSelect,this);
+
+	 // task types
+	 this.typeSelect=td.down("select",0);
+	 taskTypes.keys().each(function(t) {
+	    tt=taskTypes.get(t);
+	    this.typeSelect.add(new Option(tt.name, tt.dbid));
+	 }.bind(this));
+	 this.typeSelect.value=this.tasktypeid;
+	 this.typeSelect.onchange=rowChanged.bind(this.typeSelect, this);
 
 	 // calculated hours
          this.hoursOut=td.down("span");
@@ -243,7 +283,8 @@ Estimate.prototype= {
          {method: "put",
 	  parameters: {
              "task[new_estimate_qty]": this.qty,
-	     "task[new_estimate_unit_id]": this.unitid
+	     "task[new_estimate_unit_id]": this.unitid,
+	     "task[task_type_id]": this.tasktypeid
           },
           onSuccess: this.clearIndicator.bind(this),
           onFailure: this.setErrorIndicator.bind(this)
@@ -258,6 +299,8 @@ Estimate.prototype= {
       this.qtyfield.value=this.qty;
       this.unitid=this.original_unitid;
       this.unitSelect.value=this.unitid;
+      this.tasktypeid=this.original_tasktypeid;
+      this.typeSelect.value=this.tasktypeid;
       this.dirty=0;
       this.clearIndicator();
    },

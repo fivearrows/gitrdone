@@ -13,12 +13,18 @@ createUnit(0, 'Hours', 1.0);
       hoursid=0
    end
 -%>
+<%-
+   TaskType.all.each do |tt| -%>
+createTaskType(<%= tt.id %>, '<%= tt.name %>', <%= tt.complexity_factor %>);
+<%-
+   end
+-%>
 
 <%- @project.tasks.each do |task|
     qty = task.current_estimate ? (task.current_estimate.qty ? task.current_estimate.qty : 0) : 0
     unit = task.current_estimate ? (task.current_estimate.estimate_unit_id ? task.current_estimate.estimate_unit_id : hoursid ) : hoursid
 -%>
-createEstimate(<%= task.id %>,'<%= task.name %>',<%= qty %>,<%= unit %>,<%= task.parent_task_id ? task.parent_task_id : 0 %>,<%= task.sequence ? task.sequence : 0 %>,[<%= task.subtasks.map{|s| s.id}.join(',') %>]);
+createEstimate(<%= task.id %>,'<%= task.name %>',<%= qty %>,<%= unit %>,<%= task.parent_task_id ? task.parent_task_id : 0 %>,<%= task.sequence ? task.sequence : 0 %>,[<%= task.subtasks.map{|s| s.id}.join(',') %>],<%= task.task_type_id ? task.task_type_id : (task.project.default_task_type_id ? task.project.default_task_type_id : '0') %>);
 <%- end -%>
 
 window.onload = function() {
