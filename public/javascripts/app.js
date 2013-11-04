@@ -137,6 +137,11 @@ function Estimate(dbid,name,qty,unitid,parent,sequence,kids,tasktypeid) {
    this.tasktypeid=tasktypeid;
    this.original_tasktypeid=tasktypeid;
    this.tasktype=taskTypes.get(tasktypeid);
+   if(this.tasktype == undefined) {
+      this.tasktypeid = taskTypes.keys()[0];
+      this.original_tasktypeid=this.tasktypeid;
+      this.tasktype = taskTypes.get(this.tasktypeid);
+   }
    this.sequence=sequence;
 }
 
@@ -235,7 +240,7 @@ Estimate.prototype= {
       var thrs;
 
       if(this.kids.size() == 0) {
-	 thrs=this.units.to_hours(this.qty);
+	 thrs=this.tasktype.factor_hours(this.units.to_hours(this.qty));
       } else {
          thrs=0;
 	 this.kids.each(function(kid) {
@@ -274,6 +279,13 @@ Estimate.prototype= {
       this.statusIndicator.update("");
    },
 
+   successfullySaved: function(response) {
+      this.original_qty=this.qty;
+      this.original_unitid=this.unitid;
+      this.original_tasktypeid=this.tasktypeid;
+      this.clearIndicator(response);
+   },
+
    saveToServer: function() {
       if(!this.dirty) {
          return;
@@ -286,7 +298,7 @@ Estimate.prototype= {
 	     "task[new_estimate_unit_id]": this.unitid,
 	     "task[task_type_id]": this.tasktypeid
           },
-          onSuccess: this.clearIndicator.bind(this),
+          onSuccess: this.successfullySaved.bind(this),
           onFailure: this.setErrorIndicator.bind(this)
       });
    },
@@ -301,6 +313,9 @@ Estimate.prototype= {
       this.unitSelect.value=this.unitid;
       this.tasktypeid=this.original_tasktypeid;
       this.typeSelect.value=this.tasktypeid;
+      this.tasktype=taskTypes.get(this.tasktypeid);
+      this.units=units.get(this.unitid);
+      this.updateHours();
       this.dirty=0;
       this.clearIndicator();
    },
