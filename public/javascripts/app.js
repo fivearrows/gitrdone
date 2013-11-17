@@ -148,13 +148,15 @@ function Estimate(dbid,name,qty,unitid,parent,sequence,kids,tasktypeid) {
 Estimate.prototype= {
    editFormat: new Template(
       "<img>" +
-      "<select></select>" +
+      "<select class='column1 fixed'></select>" +
       "#{name}, " +
-      "<input size='8' value='#{qty}'> " +
-      "<select></select>" +
-      " (<span></span> Hours)" +
-      " <span></span>"
+      "<input size='8' value='#{qty}' class='column2 fixed'> " +
+      "<select class='column3 fixed'></select>" +
+      " <span class='column4 fixed'>( Hours)</span>" +
+      " <span class='column5 fixed'></span>"
    ),
+
+   hourFormat: new Template("( #{hours} Hours)"),
 
    displayFormat: new Template(
       "<img>" +
@@ -220,7 +222,8 @@ Estimate.prototype= {
       // format image
       im=td.down("img");
       im.src=spacer.src;
-      im.height=spacer.height;
+      //im.height=spacer.height;
+      im.height=1;
       im.width=(l * 35)+5;
       this.updateHours();
 
@@ -254,7 +257,8 @@ Estimate.prototype= {
    },
    
    updateHours: function() {
-      this.hoursOut.update(this.calculateHours());
+      this.hours=this.calculateHours();
+      this.hoursOut.update(this.hourFormat.evaluate(this));
 
       if(this.parent != 0) {
          p=rows.get(this.parent);

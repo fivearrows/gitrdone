@@ -1,0 +1,27 @@
+.fixed {
+   position: fixed ;
+}
+
+.column1 {
+   width: 140px ;
+   left: 300px ;
+}
+
+.column2 {
+   width: 100px ;
+   left: 450px ;
+   text-align: right ;
+}
+
+.column3 {
+   width: 140px ;
+   left: 560px ;
+}
+
+.column4 {
+   left: 710px ;
+}
+
+.column5 {
+   left: 750px ;
+}
