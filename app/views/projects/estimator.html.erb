@@ -21,6 +21,7 @@ createTaskType(<%= tt.id %>, '<%= tt.name %>', <%= tt.complexity_factor %>);
    end
 -%>
 
+createEstimate(0,'Total',0,1,0,0,[],0);
 <%- @project.tasks.each do |task|
     qty = task.current_estimate ? (task.current_estimate.qty ? task.current_estimate.qty : 0) : 0
     unit = task.current_estimate ? (task.current_estimate.estimate_unit_id ? task.current_estimate.estimate_unit_id : hoursid ) : hoursid
@@ -44,8 +45,8 @@ document.observe("dom:loaded", function() {
 <span class="button" onclick="revertChanges('status')">Revert</span><br/>
 <div id="status"></div>
 <br />
-<table id="jsesttable">
-</table>
+<ul id="jsesttable" class="nobullet">
+</ul>
 </div>
 <div id="spacer" style="display: none">
 <%= image_tag("gr1px.png", :size=>"1x8") %>

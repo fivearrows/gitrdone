@@ -102,14 +102,19 @@ rows = $H();
 
 function createEstimate(dbid,name,qty,unitid,parent,sequence,kids,tasktypeid) {
   rows.set(dbid,new Estimate(dbid,name,qty,unitid,parent,sequence,kids,tasktypeid));
+  if(dbid != 0 && parent==0 && rows.get(0) && rows.get(0).kids) {
+     r=rows.get(0).kids;
+     r.push(dbid);
+  }
 }
 
 function displayEstimateHierarchy(tb,spacer) {
-   rows.toArray().map( function(a) { return a[1] }).filter(filter_toplevel).
-   	sort(sort_by_sequence).
-	each(function(row) {
-	   row && row.addrow(tb,spacer);
-	});
+//   rows.toArray().map( function(a) { return a[1] }).filter(filter_toplevel).
+//   	sort(sort_by_sequence).
+//	each(function(row) {
+//	   row && row.addrow(tb,spacer);
+//	});
+   rows.get(0).addrow(tb,spacer);
 }
 
 function redisplayEstimateHierarchy(tb,spacer) {
@@ -149,7 +154,7 @@ Estimate.prototype= {
    editFormat: new Template(
       "<img>" +
       "<select class='column1 fixed'></select>" +
-      "#{name}, " +
+      "#{name} " +
       "<input size='8' value='#{qty}' class='column2 fixed'> " +
       "<select class='column3 fixed'></select>" +
       " <span class='column4 fixed'>( Hours)</span>" +
@@ -160,7 +165,7 @@ Estimate.prototype= {
 
    displayFormat: new Template(
       "<img>" +
-      "#{name}, " +
+      "#{name} " +
       "<span></span> Hours"
    ),
 
@@ -177,21 +182,20 @@ Estimate.prototype= {
    addrow: function(tbl,spacer,prefix,level) {
       var l = level || 0;
       var tb=$(tbl);
-      var tr=document.createElement('tr');
-      var td=document.createElement('td');
+      var li=document.createElement('li');
       var im;
       var n;
 
       if(this.kids.size() == 0) {
          n=this.editFormat.evaluate(this);
-	 td.update(n);
+	 li.update(n);
 
 	 // qty input
-	 this.qtyfield=td.down("input");
+	 this.qtyfield=li.down("input");
          this.qtyfield.onchange=rowChanged.bind(this.qtyfield,this);
 
 	 // qty units
-	 this.unitSelect=td.down("select",1);
+	 this.unitSelect=li.down("select",1);
          units.keys().each(function(u) {
             uu=units.get(u);
             this.unitSelect.add(new Option(uu.name, uu.dbid));
@@ -200,7 +204,7 @@ Estimate.prototype= {
          this.unitSelect.onchange=rowChanged.bind(this.unitSelect,this);
 
 	 // task types
-	 this.typeSelect=td.down("select",0);
+	 this.typeSelect=li.down("select",0);
 	 taskTypes.keys().each(function(t) {
 	    tt=taskTypes.get(t);
 	    this.typeSelect.add(new Option(tt.name, tt.dbid));
@@ -209,28 +213,27 @@ Estimate.prototype= {
 	 this.typeSelect.onchange=rowChanged.bind(this.typeSelect, this);
 
 	 // calculated hours
-         this.hoursOut=td.down("span");
+         this.hoursOut=li.down("span");
 
 	 // update indicator
-	 this.statusIndicator=td.down("span",1);
+	 this.statusIndicator=li.down("span",1);
       } else {
          n=this.displayFormat.evaluate(this);
-	 Element.update(td,n);
-	 this.hoursOut=td.down("span");
+	 Element.update(li,n);
+	 this.hoursOut=li.down("span");
       }
 
       // format image
-      im=td.down("img");
+      im=li.down("img");
       im.src=spacer.src;
       //im.height=spacer.height;
       im.height=1;
       im.width=(l * 35)+5;
       this.updateHours();
 
-      this.row=tr;
-      tr.appendChild(td);
-      tb.appendChild(tr);
-      tr.id='EstimateRow' + this.dbid;
+      this.row=li;
+      tb.appendChild(li);
+      li.id='EstimateRow' + this.dbid;
       this.kids.each(function(kid) { 
          k=rows.get(kid);
 	 if(k) {
@@ -260,7 +263,7 @@ Estimate.prototype= {
       this.hours=this.calculateHours();
       this.hoursOut.update(this.hourFormat.evaluate(this));
 
-      if(this.parent != 0) {
+      if(this.dbid != 0) {
          p=rows.get(this.parent);
 	 if(p) {
 	    p.updateHours();

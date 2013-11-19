@@ -32,7 +32,7 @@ tr {
    padding: 5px ;
 }
 
-tr.changed {
+li.changed {
    background-color: #eeeeee ;
 }
 
@@ -144,4 +144,8 @@ span.button:hover {
    border-width: 2px ;
    border-color: #393 ;
    color: #393 ;
+}
+
+.nobullet {
+   list-style: none ;
 }
