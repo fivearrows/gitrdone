@@ -43,7 +43,7 @@ h1.divheader {
 }
 
 #mainmenu:after {
-   content: " - ToDoIt v0.1" ;
+   content: " - Git'r'Done v0.1" ;
 }
 
 #mainmenu a:visited {
