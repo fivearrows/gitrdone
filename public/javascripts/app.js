@@ -229,10 +229,11 @@ Estimate.prototype= {
       this.row=li;
       tb.appendChild(li);
       li.id='EstimateRow' + this.dbid;
+      ul=li.down('ul');
       this.kids.each(function(kid) { 
          k=rows.get(kid);
 	 if(k) {
-            k.addrow(li,spacer,"",l+1);
+            k.addrow(ul,spacer,"",l+1);
 	 }
       });
    },
