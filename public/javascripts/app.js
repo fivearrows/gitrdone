@@ -109,11 +109,6 @@ function createEstimate(dbid,name,qty,unitid,parent,sequence,kids,tasktypeid) {
 }
 
 function displayEstimateHierarchy(tb,spacer) {
-//   rows.toArray().map( function(a) { return a[1] }).filter(filter_toplevel).
-//   	sort(sort_by_sequence).
-//	each(function(row) {
-//	   row && row.addrow(tb,spacer);
-//	});
    rows.get(0).addrow(tb,spacer);
 }
 
@@ -164,9 +159,9 @@ Estimate.prototype= {
    hourFormat: new Template("( #{hours} Hours)"),
 
    displayFormat: new Template(
-      "<img>" +
+      "<ul><img>" +
       "#{name} " +
-      "<span></span> Hours"
+      "<span></span> Hours</ul>"
    ),
 
    dump: function() {
@@ -224,11 +219,11 @@ Estimate.prototype= {
       }
 
       // format image
-      im=li.down("img");
-      im.src=spacer.src;
+      //im=li.down("img");
+      //im.src=spacer.src;
       //im.height=spacer.height;
-      im.height=1;
-      im.width=(l * 35)+5;
+      //im.height=1;
+      //im.width=(l * 35)+5;
       this.updateHours();
 
       this.row=li;
@@ -237,7 +232,7 @@ Estimate.prototype= {
       this.kids.each(function(kid) { 
          k=rows.get(kid);
 	 if(k) {
-            k.addrow(tbl,spacer,"",l+1);
+            k.addrow(li,spacer,"",l+1);
 	 }
       });
    },
