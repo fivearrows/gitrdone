@@ -43,7 +43,7 @@ h1.divheader {
 }
 
 #mainmenu:after {
-   content: " - ToDoIt v0.1" ;
+   content: " - gitrdone v1.0" ;
 }
 
 #mainmenu a:visited {
@@ -81,7 +81,6 @@ img.logo {
 
 #siteLogo h1 {
    border-style: none ;
-   height: 64px ;
 }
 
 #myProjects table,#myTasks table {
